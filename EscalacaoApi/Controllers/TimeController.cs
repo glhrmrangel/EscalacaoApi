@@ -30,7 +30,7 @@ public class TimeController : ControllerBase
         Time time = _mapper.Map<Time>(timeDto);
         _context.Times.Add(time);
         _context.SaveChanges();
-        return CreatedAtAction(nameof(RecuperaTimePorId), new { Id = time.Id }, time);
+        return CreatedAtAction(nameof(RecuperaTimePorId), new { id = time.Id }, time);
     }
 
     /// <summary>
