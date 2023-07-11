@@ -1,0 +1,427 @@
+{
+	"info": {
+		"_postman_id": "a66d07fd-14ce-4ada-8be1-1954d076ca8f",
+		"name": "EscalacaoApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21732108"
+	},
+	"item": [
+		{
+			"name": "Time",
+			"item": [
+				{
+					"name": "RecuperaTimes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/time",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RecuperaTimePorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/time/2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"time",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AdicionaTime",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Santos\",\r\n    \"Estado\": \"São Paulo\",\r\n    \"AnoFundacao\": 1912\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/time",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizaTime",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Corinthians\",\r\n    \"Estado\": \"São Paulo\",\r\n    \"AnoFundacao\": 1911\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/time/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"time",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletaTime",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/time/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"time",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Treinador",
+			"item": [
+				{
+					"name": "RecuperaTreinadores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/treinador",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"treinador"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RecuperaTreinadorPorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/treinador/2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"treinador",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AdicionaTreinador",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Mano Menezes\",\r\n    \"TimeId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/treinador",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"treinador"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizaTreinador",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Tite\",\r\n    \"TimeId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/treinador/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"treinador",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletaTreinador",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/treinador/5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"treinador",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jogador",
+			"item": [
+				{
+					"name": "RecuperaJogadores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/jogador",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RecuperaJogadores (por Time)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/jogador?timeId=2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador"
+							],
+							"query": [
+								{
+									"key": "timeId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RecuperaJogadorPorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/jogador/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AdicionaJogador",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Maradona\",\r\n    \"NumeroCamisa\": 10,\r\n    \"TimeId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/jogador",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizaJogador",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Pelé - Edson Arantes\",\r\n    \"NumeroCamisa\": 10,\r\n    \"TimeId\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/jogador/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletaJogador",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7111/jogador/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizaCampoJogador",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"op\": \"replace\",\r\n        \"path\": \"/nome\",\r\n        \"value\": \"Lionel\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7111/jogador/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7111",
+							"path": [
+								"jogador",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
