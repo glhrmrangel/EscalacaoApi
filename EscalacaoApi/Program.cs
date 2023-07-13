@@ -1,4 +1,5 @@
 using EscalacaoApi.Data;
+using EscalacaoApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System;
@@ -11,6 +12,10 @@ var connectionString = builder.Configuration.GetConnectionString("EscalacaoConne
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<JogadorContext>(option => option.UseLazyLoadingProxies().UseSqlServer(connectionString));
+
+builder.Services.AddScoped<JogadorService>();
+builder.Services.AddScoped<TreinadorService>();
+builder.Services.AddScoped<TimeService>();
 
 // Add services to the container.
 

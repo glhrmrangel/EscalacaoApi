@@ -2,6 +2,7 @@
 using EscalacaoApi.Data;
 using EscalacaoApi.Data.Dtos;
 using EscalacaoApi.Models;
+using EscalacaoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EscalacaoApi.Controllers;
@@ -10,13 +11,11 @@ namespace EscalacaoApi.Controllers;
 [Route("[controller]")]
 public class TimeController : ControllerBase
 {
-    private JogadorContext _context;
-    private IMapper _mapper;
+    private TimeService _timeService;
 
-    public TimeController(JogadorContext context, IMapper mapper)
+    public TimeController(TimeService timeService)
     {
-        _context = context;
-        _mapper = mapper;
+        _timeService = timeService;
     }
 
     /// <summary>
@@ -27,9 +26,7 @@ public class TimeController : ControllerBase
     [HttpPost]
     public IActionResult AdicionaTime(CreateTimeDto timeDto)
     {
-        Time time = _mapper.Map<Time>(timeDto);
-        _context.Times.Add(time);
-        _context.SaveChanges();
+        var time = _timeService.InsereTime(timeDto);
         return CreatedAtAction(nameof(RecuperaTimePorId), new { id = time.Id }, time);
     }
 
@@ -42,7 +39,7 @@ public class TimeController : ControllerBase
     [HttpGet]
     public IEnumerable<ReadTimeDto> RecuperaTimes([FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
-        return _mapper.Map<List<ReadTimeDto>>(_context.Times.Skip(skip).Take(take).ToList());
+        return _timeService.RecuperaTimes(skip, take);
     }
 
     /// <summary>
@@ -53,10 +50,10 @@ public class TimeController : ControllerBase
     [HttpGet("{id}")]  
     public IActionResult RecuperaTimePorId(int id) 
     {
-        var time = _context.Times.FirstOrDefault(time => time.Id == id);
+        var time = _timeService.BuscaTimePorId(id);
         if (time == null) return NotFound();
 
-        ReadTimeDto timeDto = _mapper.Map<ReadTimeDto>(time);
+        ReadTimeDto timeDto = _timeService.RecuperaTime(time);
         return Ok(timeDto);
     }
 
@@ -69,10 +66,9 @@ public class TimeController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult AtualizaTime(int id, [FromBody] UpdateTimeDto timeDto) 
     {
-        var time = _context.Times.FirstOrDefault(time => time.Id == id);
+        var time = _timeService.BuscaTimePorId(id);
         if (time == null) return NotFound();
-        _mapper.Map(timeDto, time);
-        _context.SaveChanges();
+        _timeService.AtualizaTime(timeDto, time);
         return NoContent();
     }
 
@@ -84,10 +80,9 @@ public class TimeController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeletaTime(int id) 
     {
-        var time = _context.Times.FirstOrDefault(time => time.Id == id);
+        var time = _timeService.BuscaTimePorId(id);
         if (time == null) return NotFound();
-        _context.Remove(time);
-        _context.SaveChanges();
+        _timeService.DeletaTime(time);
         return NoContent();
     }
 }

@@ -2,6 +2,7 @@
 using EscalacaoApi.Data;
 using EscalacaoApi.Data.Dtos;
 using EscalacaoApi.Models;
+using EscalacaoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,11 @@ namespace EscalacaoApi.Controllers;
 
 public class TreinadorController : ControllerBase
 {
-    private JogadorContext _context;
-    private IMapper _mapper;
+    private TreinadorService _treinadorService;
 
-    public TreinadorController(JogadorContext context, IMapper mapper)
+    public TreinadorController(TreinadorService treinadorService)
     {
-        _context = context;
-        _mapper = mapper;
+        _treinadorService = treinadorService;
     }
 
     /// <summary>
@@ -30,16 +29,7 @@ public class TreinadorController : ControllerBase
     [HttpPost]
     public IActionResult AdicionaTreinador([FromBody] CreateTreinadorDto treinadorDto)
     {
-        Treinador treinador = _mapper.Map<Treinador>(treinadorDto);
-        _context.Treinadores.Add(treinador);
-        try
-        {
-            _context.SaveChanges();
-        }
-        catch (DbUpdateException ex)
-        {
-            return UnprocessableEntity("Não foi possível processar a requisição. Verifique o ID do Time.");
-        }
+        var treinador = _treinadorService.InsereTreinador(treinadorDto);
         return CreatedAtAction(nameof(RetornaTreinadorPorId), new { id = treinador.Id }, treinador);
     }
 
@@ -50,7 +40,7 @@ public class TreinadorController : ControllerBase
     [HttpGet]
     public IEnumerable<ReadTreinadorDto> RetornaTreinadores()
     {
-        return _mapper.Map<List<ReadTreinadorDto>>(_context.Treinadores.ToList());
+        return _treinadorService.RecuperaTreinadores();
     }
 
     /// <summary>
@@ -61,9 +51,9 @@ public class TreinadorController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult RetornaTreinadorPorId(int id)
     {
-        var treinador = _context.Treinadores.FirstOrDefault(treinador => treinador.Id  == id);
+        var treinador = _treinadorService.BuscaTreinadorPorId(id);
         if (treinador == null) return NotFound();
-        var treinadorDto = _mapper.Map<ReadTreinadorDto>(treinador);
+        var treinadorDto = _treinadorService.RecuperaTreinador(treinador);
         return Ok(treinadorDto);
     }
 
@@ -76,17 +66,9 @@ public class TreinadorController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult AtualizaTreinador(int id, [FromBody] UpdateTreinadorDto treinadorDto)
     {
-        var treinador = _context.Treinadores.FirstOrDefault(treinador => treinador.Id == id);
+        var treinador = _treinadorService.BuscaTreinadorPorId(id);
         if (treinador == null) return NotFound();
-        _mapper.Map(treinadorDto, treinador);
-        try
-        {
-            _context.SaveChanges();
-        }
-        catch (DbUpdateException ex)
-        {
-            return UnprocessableEntity("Não foi possível processar a requisição. Verifique o ID do Time.");
-        }
+        _treinadorService.AtualizaTreinador(treinadorDto, treinador);
         return NoContent();
     }
 
@@ -98,10 +80,9 @@ public class TreinadorController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeletaTreinador(int id)
     {
-        var treinador = _context.Treinadores.FirstOrDefault(treinador => treinador.Id == id);
+        var treinador = _treinadorService.BuscaTreinadorPorId(id);
         if (treinador == null) return NotFound();
-        _context.Remove(treinador);
-        _context.SaveChanges();
+        _treinadorService.DeletaTreinador(treinador);
         return NoContent();
     }
 }

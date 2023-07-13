@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using EscalacaoApi.Data;
-using EscalacaoApi.Data.Dtos;
-using EscalacaoApi.Models;
+﻿using EscalacaoApi.Data.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.JsonPatch;
+using EscalacaoApi.Services;
 
 namespace EscalacaoApi.Controllers;
 
@@ -12,13 +8,11 @@ namespace EscalacaoApi.Controllers;
 [Route("[controller]")]
 public class JogadorController : ControllerBase
 {
-    private JogadorContext _context;
-    private IMapper _mapper;
+    private JogadorService _jogadorService;
 
-    public JogadorController(JogadorContext context, IMapper mapper)
+    public JogadorController(JogadorService jogadorService)
     {
-        _context = context;
-        _mapper = mapper;
+        _jogadorService = jogadorService;
     }
 
     /// <summary>
@@ -30,19 +24,10 @@ public class JogadorController : ControllerBase
     [HttpPost]
     public IActionResult AdicionaJogador([FromBody] CreateJogadorDto jogadorDto)
     {
-        Jogador jogador = _mapper.Map<Jogador>(jogadorDto);
-        _context.Jogadores.Add(jogador);
-        try
-        {
-            _context.SaveChanges();
-        }
-        catch(DbUpdateException ex)
-        {
-            return UnprocessableEntity("Não foi possível processar a requisição. Verifique o ID do Time.");
-        }
-        
+        var jogador = _jogadorService.InsereJogador(jogadorDto);
         return CreatedAtAction(nameof(RecuperaJogadorPorId), new { id = jogador.Id }, jogadorDto);
     }
+
     /// <summary>
     /// Retorna uma lista de jogadores em ordem de inserção OU pertencentes a um mesmo time.
     /// </summary>
@@ -51,12 +36,9 @@ public class JogadorController : ControllerBase
     /// <param name="timeId">Inserido caso desejar buscar todos os jogadores pertencentes a um time em comum. Valor padrão NULO.</param>
     /// <returns>IEnumerable</returns>
     [HttpGet]
-    public IEnumerable<ReadJogadorDto> RecuperaJogadores([FromQuery] int skip = 0, [FromQuery] int take = 50,[FromQuery] int? timeId = null)
+    public IEnumerable<ReadJogadorDto> RecuperaJogadores([FromQuery] int skip = 0, [FromQuery] int take = 50, [FromQuery] int? timeId = null)
     {
-        if (timeId == null) 
-            return _mapper.Map<List<ReadJogadorDto>>(_context.Jogadores.Skip(skip).Take(take).ToList());
-
-        return _mapper.Map<List<ReadJogadorDto>>(_context.Jogadores.Skip(skip).Take(take).Where(jogador => jogador.TimeId == timeId).ToList());
+        return _jogadorService.RecuperaJogadores(skip, take, timeId);
     }
 
     /// <summary>
@@ -67,10 +49,10 @@ public class JogadorController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult RecuperaJogadorPorId(int id)
     {
-        var jogador = _context.Jogadores.FirstOrDefault(jogador => jogador.Id == id);
+        var jogador = _jogadorService.BuscaJogadorPorId(id);
         if (jogador != null)
         {
-            ReadJogadorDto jogadorDto = _mapper.Map<ReadJogadorDto>(jogador);
+            var jogadorDto = _jogadorService.RecuperaJogador(jogador);
             return Ok(jogadorDto);
         }
         return NotFound();
@@ -83,52 +65,15 @@ public class JogadorController : ControllerBase
     /// <param name="jogadorDto">Recebe os campos Nome, NumeroCamisa e TimeId (recebido na criação de um time via AdicionaTime)</param>
     /// <returns>IActionResult</returns>
     [HttpPut("{id}")]
-    public IActionResult AtualizaJogador(int id, [FromBody] UpdateJogadorDto jogadorDto) 
+    public IActionResult AtualizaJogador(int id, [FromBody] UpdateJogadorDto jogadorDto)
     {
-        var jogador = _context.Jogadores.FirstOrDefault(jogador => jogador.Id == id);
+        var jogador = _jogadorService.BuscaJogadorPorId(id);
         if (jogador != null)
         {
-            _mapper.Map(jogadorDto, jogador);
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (DbUpdateException ex)
-            {
-                return UnprocessableEntity("Não foi possível processar a requisição. Verifique o ID do Time.");
-            }
+            _jogadorService.AtualizaJogador(jogadorDto, jogador);
             return NoContent();
         }
         return NotFound();
-    }
-
-    /// <summary>
-    /// Atualiza uma única informação de um jogador.
-    /// </summary>
-    /// <param name="id">Parâmetro para identificação do jogador</param>
-    /// <param name="campoJogadorDto">Recebe individualmente os campos Nome, NumeroCamisa e TimeId (recebido na criação de um time via AdicionaTime)</param>
-    /// <returns>IActionResult</returns>
-    [HttpPatch("{id}")]
-    public IActionResult AtualizaCampoJogador(int id, JsonPatchDocument<UpdateJogadorDto> campoJogadorDto)
-    {
-        var jogador = _context.Jogadores.FirstOrDefault(jogador => jogador.Id == id);
-        if (jogador == null) return NotFound();
-                
-        var jogadorAtualizavel = _mapper.Map<UpdateJogadorDto>(jogador);
-        campoJogadorDto.ApplyTo(jogadorAtualizavel, ModelState);
-
-        if (!TryValidateModel(jogadorAtualizavel)) return ValidationProblem(ModelState);
-
-        _mapper.Map(jogadorAtualizavel, jogador);
-        try
-        {
-            _context.SaveChanges();
-        }
-        catch (DbUpdateException ex)
-        {
-            return UnprocessableEntity("Não foi possível processar a requisição. Verifique o ID do Time.");
-        }
-        return NoContent();
     }
 
     /// <summary>
@@ -137,12 +82,11 @@ public class JogadorController : ControllerBase
     /// <param name="id">Parâmetro para identificação do jogador</param>
     /// <returns>IActionResult</returns>
     [HttpDelete("{id}")]
-    public IActionResult DeletaJogador (int id)
+    public IActionResult DeletaJogador(int id)
     {
-        var jogador = _context.Jogadores.FirstOrDefault(jogador => jogador.Id == id);
+        var jogador = _jogadorService.BuscaJogadorPorId(id);
         if (jogador == null) return NotFound();
-        _context.Remove(jogador);
-        _context.SaveChanges();
+        _jogadorService.DeletaJogador(jogador);
         return NoContent();
     }
 }
